@@ -16,8 +16,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
     List<String> busLines = new ArrayList<>();
     public MyAdapter(List<String> lanes){
         busLines=lanes;
-
     }
+
+    public List<String> getBusLines() {
+        return busLines;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -28,7 +32,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.mLine.setText("Linia testowa");
+        viewHolder.mLine.setText(busLines.get(i));
     }
 
 
