@@ -21,14 +21,19 @@ import pl.ct8.monteth.zlapkanara.R;
 import pl.ct8.monteth.zlapkanara.services.StreetLocationService;
 import pl.ct8.monteth.zlapkanara.services.TicketInsService;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     Double latitudeStreet, longitudeStreet;
+    Double latitudeUser, longitudeUser;
     Location userLocation;
     private String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     private static final int PERMISSION_ALL = 101;
     private Marker ticketInsurance;
+    public static final int RADIUS=300;
 
 
     @Override
@@ -41,7 +46,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mapFragment.getMapAsync(this);
         latitudeStreet = StreetLocationService.INSTANCE.getLocation(this, TicketInsService.INSTANCE.getTodaysData().getStreet() + ", Wrocław").getLatitude();
         longitudeStreet = StreetLocationService.INSTANCE.getLocation(this, TicketInsService.INSTANCE.getTodaysData().getStreet() + ", Wrocław").getLongitude();
-
+//        latitudeUser = userLocation.getLatitude();
+//        longitudeUser = userLocation.getLongitude();
     }
 
 
@@ -62,13 +68,20 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         // Add a ticketInsurance in Sydney and move the camera
         ticketInsurance = mMap.addMarker(new MarkerOptions().position(place));
 
-
-        Circle dangerAreaCircle = mMap.addCircle(new CircleOptions()
-                .center(place)
-                .radius(300)
-                .strokeColor(Color.parseColor("#6671cce7"))
-                .fillColor(Color.parseColor("#3871cce7")));
-
+//        if(ifDistLessThanRadius(latitudeStreet,longitudeStreet,latitudeStreet,longitudeStreet)) {
+//            Circle dangerAreaCircle = mMap.addCircle(new CircleOptions()
+//                    .center(place)
+//                    .radius(RADIUS)
+//                    .strokeColor(Color.parseColor("#66FF0000"))
+//                    .fillColor(Color.parseColor("#38FF0000")));
+//        }
+//        else{
+//            Circle dangerAreaCircle = mMap.addCircle(new CircleOptions()
+//                    .center(place)
+//                    .radius(RADIUS)
+//                    .strokeColor(Color.parseColor("#66EEEE00"))
+//                    .fillColor(Color.parseColor("#38EEEE00")));
+//        }
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(place)
                 .zoom(15)
@@ -109,7 +122,18 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             @Override
             public void onLocationChanged(Location location) {
                 userLocation = location;
+                latitudeUser = userLocation.getLatitude();
+                longitudeUser = userLocation.getLongitude();
                 Log.e("LOC:",userLocation.getLatitude() + ", " + userLocation.getLongitude());
+                if(ifDistLessThanRadius(latitudeStreet,longitudeStreet,latitudeStreet,longitudeStreet)){
+
+                    Circle dangerAreaCircle = mMap.addCircle(new CircleOptions()
+                            .center(new LatLng(latitudeStreet, longitudeStreet))
+                            .radius(RADIUS)
+                            .strokeColor(Color.parseColor("#66FF0000"))
+                            .fillColor(Color.parseColor("#38FF0000")));
+                }
+
             }
 
             @Override
@@ -129,5 +153,19 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         };
         LocationManager locationManager = (LocationManager) getBaseContext().getSystemService(LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+    }
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
+
+    private boolean ifDistLessThanRadius(double length1, double width1,double length2,double width2){
+        double dist = Math.sqrt(Math.pow(length2-length1,2)+Math.pow(Math.cos(((length1*Math.PI)/180))*(width2-width1),2))*(40075.704/360);
+
+        return round(dist,2)<RADIUS;
+
     }
 }
