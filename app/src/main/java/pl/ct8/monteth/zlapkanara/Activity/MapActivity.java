@@ -1,8 +1,8 @@
 package pl.ct8.monteth.zlapkanara.Activity;
 
 import android.Manifest;
-import android.content.Context;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -16,7 +16,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -25,15 +24,14 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.*;
 import pl.ct8.monteth.zlapkanara.R;
 import pl.ct8.monteth.zlapkanara.data.Report;
 import pl.ct8.monteth.zlapkanara.services.StreetLocationService;
 import pl.ct8.monteth.zlapkanara.services.TicketInsService;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -50,6 +48,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     boolean ifVibrate;
     FloatingActionButton fab;
     private DatabaseReference mDatabase;
+    private ArrayList<LatLng> markerList;
 
 
     @Override
@@ -67,6 +66,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         if (!hasPermissions(this, Permissions)) {
             ActivityCompat.requestPermissions(this, Permissions, Permission_All);
         }
+
+        markerList = new ArrayList<>();
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -89,7 +90,49 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         fab = findViewById(R.id.fab_map);
         fab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"FAB ON CLICK", Toast.LENGTH_SHORT).show();
+                addReport();
+            }
+        });
+
+
+
+        // Get a reference to our posts
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+//        final DatabaseReference ref = database.getReference("server/saving-data/fireblog/posts");
+        final DatabaseReference ref = mDatabase.child("reports");
+
+//        mDatabase.child("reports").child(android_id).setValue(report);
+
+
+//        ref.once('value', function(snapshot) {
+//            snapshot.forEach(function(childSnapshot) {
+//                var childKey = childSnapshot.key;
+//                var childData = childSnapshot.val();
+//                // ...
+//            });
+//        });
+
+// Attach a listener to read the data at our posts reference
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                markerList.clear();
+                for(DataSnapshot child: dataSnapshot.getChildren()){
+                    String key = child.getKey();
+                    Double lat = (Double) ((HashMap) child.getValue()).get("lat");
+                    Double lon = (Double) ((HashMap) child.getValue()).get("lon");
+                    markerList.add(new LatLng(lat, lon));
+                }
+                mMap.clear();
+                mMap.addMarker(new MarkerOptions().position(new LatLng(latitudeStreet, longitudeStreet)));
+                for (LatLng latLng : markerList) {
+                    mMap.addMarker(new MarkerOptions().position(latLng));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
             }
         });
 
@@ -235,4 +278,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         return dist*1000<RADIUS;
 
     }
+
+
 }
