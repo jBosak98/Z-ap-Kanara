@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import pl.ct8.monteth.zlapkanara.R;
 import pl.ct8.monteth.zlapkanara.adapter.MyAdapter;
+import pl.ct8.monteth.zlapkanara.services.TicketInsService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,11 +52,8 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-        mList = new ArrayList();
+        mList = TicketInsService.INSTANCE.getTodaysData().getRoutes();
         tvData = view.findViewById(R.id.tv_day);
-        mList.add("linia1");
-        mList.add("Linia2");
-        mList.add("Linia3");
         mBusLanes = view.findViewById(R.id.rv_bus_lines);
         MyAdapter adapter = new MyAdapter(mList);
         mBusLanes.setAdapter(adapter);

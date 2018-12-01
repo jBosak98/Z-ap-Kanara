@@ -14,6 +14,7 @@ import pl.ct8.monteth.zlapkanara.R;
 import pl.ct8.monteth.zlapkanara.adapter.MyAdapter;
 import pl.ct8.monteth.zlapkanara.adapter.MyWeekAdapter;
 import pl.ct8.monteth.zlapkanara.data.Day;
+import pl.ct8.monteth.zlapkanara.services.TicketInsService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,12 +60,12 @@ public class WeekFragment extends Fragment {
         routes.add("1");
         routes.add("K");
         routes.add("910P");
-        List<Day> days = new ArrayList<>();
+        List<Day> days = TicketInsService.INSTANCE.getWeekData();
 
-        days.add(new Day("30.11", "ul. Grunwaldzka", routes));
-        days.add(new Day("30.11", "ul. Grunwaldzka", routes));
-        days.add(new Day("30.11", "ul. Grunwaldzka", routes));
-        days.add(new Day("30.11", "ul. Grunwaldzka", routes));
+//        days.add(new Day("30.11", "ul. Grunwaldzka", routes));
+//        days.add(new Day("30.11", "ul. Grunwaldzka", routes));
+//        days.add(new Day("30.11", "ul. Grunwaldzka", routes));
+//        days.add(new Day("30.11", "ul. Grunwaldzka", routes));
         MyWeekAdapter adapter = new MyWeekAdapter(days);
         mBusLanes.setAdapter(adapter);
         mBusLanes.setLayoutManager(new LinearLayoutManager(view.getContext()));
