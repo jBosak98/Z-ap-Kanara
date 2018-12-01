@@ -1,23 +1,30 @@
 package pl.ct8.monteth.zlapkanara.Activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
-
 import android.util.Log;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.*;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import pl.ct8.monteth.zlapkanara.R;
+import pl.ct8.monteth.zlapkanara.data.Report;
 import pl.ct8.monteth.zlapkanara.services.StreetLocationService;
 import pl.ct8.monteth.zlapkanara.services.TicketInsService;
 
@@ -29,6 +36,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     private static final int PERMISSION_ALL = 101;
     private Marker ticketInsurance;
+    private DatabaseReference mDatabase;
 
 
     @Override
@@ -41,6 +49,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mapFragment.getMapAsync(this);
         latitudeStreet = StreetLocationService.INSTANCE.getLocation(this, TicketInsService.INSTANCE.getTodaysData().getStreet() + ", Wrocław").getLatitude();
         longitudeStreet = StreetLocationService.INSTANCE.getLocation(this, TicketInsService.INSTANCE.getTodaysData().getStreet() + ", Wrocław").getLongitude();
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
 
     }
 
@@ -129,5 +140,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         };
         LocationManager locationManager = (LocationManager) getBaseContext().getSystemService(LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+    }
+
+    private void addReport(){
+        @SuppressLint("HardwareIds") String android_id
+                = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+        Report report = new Report(userLocation.getLatitude(), userLocation.getLongitude());
+        mDatabase.child("reports").child(android_id).setValue(report);
+        Log.e("ID:", android_id);
     }
 }
