@@ -1,33 +1,35 @@
 package pl.ct8.monteth.zlapkanara
 
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.util.Log
-import android.view.View
-import android.widget.TextView
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import org.jsoup.nodes.Element
-import org.jsoup.select.Elements
-import org.w3c.dom.Text
-import pl.ct8.monteth.zlapkanara.services.TicketInsService
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.widget.TextView;
+import pl.ct8.monteth.zlapkanara.adapter.MyAdapter;
+import pl.ct8.monteth.zlapkanara.adapter.MyPagerAdapter;
+import pl.ct8.monteth.zlapkanara.fragment.MainFragment;
 
-import java.io.IOException
+import java.util.ArrayList;
+import java.util.List;
 
-class MainActivity : AppCompatActivity() {
+public class MainActivity  extends AppCompatActivity {
+    ViewPager vp;
 
-    internal var tv: TextView
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        TicketInsService.getTodaysData()
-        print("HALOKURWA2")
-
-        tv = findViewById(R.id.acMain_tv)
-
-        getWebsite()
-
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+//        FragmentManager fm = getSupportFragmentManager();
+//        FragmentTransaction ft = fm.beginTransaction();
+//        ft.add(R.id.vp_main_view_pager, new MainFragment());
+//        ft.commit();
+        vp=findViewById(R.id.vp_main_view_pager);
+        MyPagerAdapter pagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
+        vp.setAdapter(pagerAdapter);
     }
 
     private fun getWebsite() {
