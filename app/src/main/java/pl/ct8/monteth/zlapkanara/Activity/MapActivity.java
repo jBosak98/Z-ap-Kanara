@@ -14,7 +14,9 @@ import pl.ct8.monteth.zlapkanara.R;
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    Double latitude,longitude;
+    Double latitudeStreet,longitudeStreet;
+    Double latitudeUser,longitudeUser;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +26,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        latitude=51.106944;
-        longitude=17.076944;
+        latitudeStreet=51.106944;
+        longitudeStreet=17.076944;
+
     }
 
 
@@ -41,7 +44,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        LatLng place = new LatLng(latitude, longitude);
+        LatLng place = new LatLng(latitudeStreet, longitudeStreet);
 
         // Add a marker in Sydney and move the camera
         mMap.addMarker(new MarkerOptions().position(place));
