@@ -1,6 +1,7 @@
 package pl.ct8.monteth.zlapkanara.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,7 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
 import android.widget.TextView;
+import pl.ct8.monteth.zlapkanara.Activity.MapActivity;
 import pl.ct8.monteth.zlapkanara.R;
 import pl.ct8.monteth.zlapkanara.adapter.MyAdapter;
 import pl.ct8.monteth.zlapkanara.services.TicketInsService;
@@ -27,6 +30,7 @@ public class MainFragment extends Fragment {
     TextView tvData;
     TextView tvStreet;
     List<String> mList;
+    Button btMap;
 
 
     // TODO: Rename and change types of parameters
@@ -59,6 +63,14 @@ public class MainFragment extends Fragment {
         tvData.setText(TicketInsService.INSTANCE.getTodaysData().getDate());
         tvStreet = view.findViewById(R.id.tv_street);
         tvStreet.setText(TicketInsService.INSTANCE.getTodaysData().getStreet());
+        btMap = view.findViewById(R.id.bt_map);
+        btMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(view.getContext(),MapActivity.class);
+                startActivity(i);
+            }
+        });
         mBusLanes = view.findViewById(R.id.rv_bus_lines);
         mBusLanes.addItemDecoration(new DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL));

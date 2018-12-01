@@ -1,4 +1,4 @@
-package pl.ct8.monteth.zlapkanara;
+package pl.ct8.monteth.zlapkanara.Activity;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
+import android.widget.Toolbar;
+import pl.ct8.monteth.zlapkanara.R;
 import pl.ct8.monteth.zlapkanara.adapter.MyAdapter;
 import pl.ct8.monteth.zlapkanara.adapter.MyPagerAdapter;
 import pl.ct8.monteth.zlapkanara.fragment.MainFragment;
@@ -23,13 +25,8 @@ public class MainActivity  extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        FragmentManager fm = getSupportFragmentManager();
-//        FragmentTransaction ft = fm.beginTransaction();
-//        ft.add(R.id.vp_main_view_pager, new MainFragment());
-//        ft.commit();
-        vp=findViewById(R.id.vp_main_view_pager);
+        vp = findViewById(R.id.vp_main_view_pager);
         MyPagerAdapter pagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
         vp.setAdapter(pagerAdapter);
     }
-
 }
