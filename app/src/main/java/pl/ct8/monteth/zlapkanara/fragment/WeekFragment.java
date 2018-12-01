@@ -62,10 +62,6 @@ public class WeekFragment extends Fragment {
         routes.add("910P");
         List<Day> days = TicketInsService.INSTANCE.getWeekData();
 
-//        days.add(new Day("30.11", "ul. Grunwaldzka", routes));
-//        days.add(new Day("30.11", "ul. Grunwaldzka", routes));
-//        days.add(new Day("30.11", "ul. Grunwaldzka", routes));
-//        days.add(new Day("30.11", "ul. Grunwaldzka", routes));
         MyWeekAdapter adapter = new MyWeekAdapter(days);
         mBusLanes.setAdapter(adapter);
         mBusLanes.setLayoutManager(new LinearLayoutManager(view.getContext()));
