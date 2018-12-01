@@ -32,38 +32,9 @@ public class MainActivity extends AppCompatActivity {
         vp = findViewById(R.id.vp_main_view_pager);
         MyPagerAdapter pagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
         vp.setAdapter(pagerAdapter);
-        askPermission();
         StreetLocationService.INSTANCE.getLocation(this, "Szybka 7, Wrocław");
-        initLocationService();
 
 
-    }
-
-    public void askPermission() {
-        for (String permission : PERMISSIONS) {
-            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    requestPermissions(PERMISSIONS, PERMISSION_ALL);
-                    return;
-                }
-            }
-        }
-    }
-
-    public void initLocationService() {
-        FusedLocationProviderClient locationProvider = LocationServices.getFusedLocationProviderClient(this);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            askPermission();
-        }
-        locationProvider.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                Log.e("LOC:",location.getLatitude() + ", " + location.getLongitude());
-                //TODO:set marker
-
-            }
-        });
     }
 
 }
