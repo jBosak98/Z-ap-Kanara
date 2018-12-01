@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ public class MainFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     RecyclerView mBusLanes;
     TextView tvData;
+    TextView tvStreet;
     List<String> mList;
 
 
@@ -54,7 +56,12 @@ public class MainFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         mList = TicketInsService.INSTANCE.getTodaysData().getRoutes();
         tvData = view.findViewById(R.id.tv_day);
+        tvData.setText(TicketInsService.INSTANCE.getTodaysData().getDate());
+        tvStreet = view.findViewById(R.id.tv_street);
+        tvStreet.setText(TicketInsService.INSTANCE.getTodaysData().getStreet());
         mBusLanes = view.findViewById(R.id.rv_bus_lines);
+        mBusLanes.addItemDecoration(new DividerItemDecoration(getContext(),
+                DividerItemDecoration.VERTICAL));
         MyAdapter adapter = new MyAdapter(mList);
         mBusLanes.setAdapter(adapter);
         mBusLanes.setLayoutManager(new LinearLayoutManager(view.getContext()));
