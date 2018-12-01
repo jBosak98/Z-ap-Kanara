@@ -1,6 +1,5 @@
 package pl.ct8.monteth.zlapkanara.services
 
-import android.util.Log
 import org.jsoup.Jsoup
 import pl.ct8.monteth.zlapkanara.data.Day
 import pl.ct8.monteth.zlapkanara.data.POJODate
@@ -63,7 +62,6 @@ object TicketInsService {
             .toMutableList()
         weekData.sortBy { it.getDate().get(Calendar.DAY_OF_YEAR) }
         lastCheckedData = Calendar.getInstance().time
-        Log.e("XD", "Pobrałem dane")
 
     }
 
