@@ -10,11 +10,13 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -41,6 +43,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     Circle dangerAreaCircle;
     CircleOptions optionsY, optionsR;
     boolean ifVibrate;
+    FloatingActionButton fab;
 
 
     @Override
@@ -59,9 +62,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             ActivityCompat.requestPermissions(this, Permissions, Permission_All);
         }
 
-
-        latitudeStreet = StreetLocationService.INSTANCE.getLocation(this, TicketInsService.INSTANCE.getTodaysData().getStreet() + ", Wrocław").getLatitude();
-        longitudeStreet = StreetLocationService.INSTANCE.getLocation(this, TicketInsService.INSTANCE.getTodaysData().getStreet() + ", Wrocław").getLongitude();
+        latitudeStreet = StreetLocationService.INSTANCE.getLocation(this
+                , TicketInsService.INSTANCE.getTodaysData().getStreet() + ", Wrocław").getLatitude();
+        longitudeStreet = StreetLocationService.INSTANCE.getLocation(this
+                , TicketInsService.INSTANCE.getTodaysData().getStreet() + ", Wrocław").getLongitude();
         optionsR = new CircleOptions()
                 .center(new LatLng(latitudeStreet, longitudeStreet))
                 .radius(RADIUS)
@@ -73,6 +77,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 .strokeColor(Color.parseColor("#66EEEE00"))
                 .fillColor(Color.parseColor("#38EEEE00"));
         ifVibrate = true;
+        fab = findViewById(R.id.fab_map);
+        fab.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(),"FAB ON CLICK", Toast.LENGTH_SHORT).show();
+            }
+        });
 
 //        latitudeUser = userLocation.getLatitude();
 //        longitudeUser = userLocation.getLongitude();
@@ -124,8 +134,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 //        askPermission();
         initLocationService();
-
     }
+
 
     public void askPermission() {
         for (String permission : PERMISSIONS) {
