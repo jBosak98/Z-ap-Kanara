@@ -10,6 +10,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
 import pl.ct8.monteth.zlapkanara.R;
+import pl.ct8.monteth.zlapkanara.services.StreetLocationService;
+import pl.ct8.monteth.zlapkanara.services.TicketInsService;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -26,8 +28,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        latitudeStreet=51.106944;
-        longitudeStreet=17.076944;
+        latitudeStreet=StreetLocationService.INSTANCE.getLocation(this, TicketInsService.INSTANCE.getTodaysData().getStreet() + ", Wrocław").getLatitude();
+        longitudeStreet=StreetLocationService.INSTANCE.getLocation(this, TicketInsService.INSTANCE.getTodaysData().getStreet() + ", Wrocław").getLongitude();
 
     }
 
