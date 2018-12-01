@@ -1,5 +1,6 @@
 package pl.ct8.monteth.zlapkanara.data
 
+import android.util.Log
 import java.util.*
 
 class POJODate() {
@@ -23,12 +24,13 @@ class POJODate() {
 
     fun setDate(sDate:String){
         val inDate = sDate.split(".").toList().map { it.toInt() }//day, month, year
-        this.date.set(inDate[2], inDate[1], inDate[0])//year, month, day
+        Log.e("XD", inDate[2].toString() +  inDate[1].toString() + inDate[0].toString())
+        this.date.set(inDate[2], inDate[1]-1, inDate[0])//year, month, day
     }
 
     fun getDay():Day{
 //      Day(date: String, street: String, lines: List<String>):
-        return Day("${date.get(Calendar.DAY_OF_MONTH)},${date.get(Calendar.MONTH)}", street, routes)
+        return Day("${date.get(Calendar.DAY_OF_MONTH)}.${date.get(Calendar.MONTH)+1}", street, routes)
     }
     fun getDate(): Calendar {
         return date
