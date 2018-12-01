@@ -37,7 +37,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     private static final int PERMISSION_ALL = 101;
     private Marker ticketInsurance;
-    public static final int RADIUS=300;
+    public static final int RADIUS = 300;
     Circle dangerAreaCircle;
     CircleOptions optionsY, optionsR;
     boolean ifVibrate;
@@ -51,6 +51,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        int Permission_All = 1;
+        String[] Permissions = {
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,};
+        if (!hasPermissions(this, Permissions)) {
+            ActivityCompat.requestPermissions(this, Permissions, Permission_All);
+        }
+
 
         latitudeStreet = StreetLocationService.INSTANCE.getLocation(this, TicketInsService.INSTANCE.getTodaysData().getStreet() + ", Wrocław").getLatitude();
         longitudeStreet = StreetLocationService.INSTANCE.getLocation(this, TicketInsService.INSTANCE.getTodaysData().getStreet() + ", Wrocław").getLongitude();
@@ -64,7 +72,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 .radius(RADIUS)
                 .strokeColor(Color.parseColor("#66EEEE00"))
                 .fillColor(Color.parseColor("#38EEEE00"));
-        ifVibrate=true;
+        ifVibrate = true;
 
 //        latitudeUser = userLocation.getLatitude();
 //        longitudeUser = userLocation.getLongitude();
@@ -106,13 +114,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 .target(place)
                 .zoom(15)
                 .build();
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            askPermission();
+//        }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            askPermission();
+            return;
         }
         mMap.setMyLocationEnabled(true);
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        askPermission();
+//        askPermission();
         initLocationService();
+
     }
 
     public void askPermission() {
@@ -125,6 +137,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 }
             }
         }
+    }
+    public static boolean hasPermissions(Context context, String... permissions){
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M && context!=null &&permissions!=null){
+            for (String permission: permissions){
+                if (ActivityCompat.checkSelfPermission(context, permission)!=PackageManager.PERMISSION_GRANTED){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public void initLocationService() {
@@ -149,19 +171,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                     if(dangerAreaCircle!=null) {
                         dangerAreaCircle.remove();
                     }
-                    //Toast.makeText(getApplicationContext(),"test czy tutaj dochodzi",Toast.LENGTH_SHORT).show();
-
                     dangerAreaCircle = mMap.addCircle(optionsR);
                 }
                 else{
                     if(dangerAreaCircle!=null) {
                         dangerAreaCircle.remove();
                     }
-                    //Toast.makeText(getApplicationContext(),"test czy tutaj dochodzi",Toast.LENGTH_SHORT).show();
                     dangerAreaCircle = mMap.addCircle(optionsY);
                 }
-
-
             }
 
             @Override
@@ -181,6 +198,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         };
         LocationManager locationManager = (LocationManager) getBaseContext().getSystemService(LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
     }
 
 
