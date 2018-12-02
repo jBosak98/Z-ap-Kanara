@@ -32,6 +32,7 @@ import pl.ct8.monteth.zlapkanara.services.TicketInsService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -62,7 +63,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         int Permission_All = 1;
         String[] Permissions = {
                 Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,};
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION};
         if (!hasPermissions(this, Permissions)) {
             ActivityCompat.requestPermissions(this, Permissions, Permission_All);
         }
@@ -72,10 +75,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
 
-        latitudeStreet = StreetLocationService.INSTANCE.getLocation(this
-                , TicketInsService.INSTANCE.getTodaysData().getStreet() + ", Wrocław").getLatitude();
-        longitudeStreet = StreetLocationService.INSTANCE.getLocation(this
-                , TicketInsService.INSTANCE.getTodaysData().getStreet() + ", Wrocław").getLongitude();
+        latitudeStreet = Objects.requireNonNull(StreetLocationService.INSTANCE.getLocation(this
+                , TicketInsService.INSTANCE.getTodaysData().getStreet() + ", Wrocław")).getLatitude();
+        longitudeStreet = Objects.requireNonNull(StreetLocationService.INSTANCE.getLocation(this
+                , TicketInsService.INSTANCE.getTodaysData().getStreet() + ", Wrocław")).getLongitude();
         optionsR = new CircleOptions()
                 .center(new LatLng(latitudeStreet, longitudeStreet))
                 .radius(RADIUS)
